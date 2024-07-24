@@ -69,7 +69,7 @@ class WeatherScreenState extends State<WeatherScreen>
                                             Column(
                                               children: [
                                                 Text(
-                                                  'Breeze App',
+                                                  'Weatherly App',
                                                   style: AppTextStyles.headline.copyWith(
                                                       fontSize: 36
                                                   ),
