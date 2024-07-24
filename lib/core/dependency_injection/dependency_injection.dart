@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:simple_weather_app/core/strings/strings.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/data/services/get_city_weather_details.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/domain/useCase/get_city_weather_details.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/presentation/cubit/city_weather_details_cubit.dart';
@@ -14,7 +15,7 @@ final getIt = GetIt.instance;
 
 void setup() {
  Dio dio =  Dio(BaseOptions(
-    baseUrl: "https://api.open-meteo.com/v1/forecast?",
+    baseUrl: AppStrings.baseUrl,
   ),
   )..interceptors.add(dioLoggerInterceptor);
   getIt.registerSingleton<Dio>(dio);

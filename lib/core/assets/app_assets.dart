@@ -1,6 +1,6 @@
 class AppAssets {
 
-  static const String assetsPath = "assets/";
+  static const String assetsPath = "assets/images/";
   static const String _jpg = ".jpg";
   static const String _png = ".png";
   static const String _gif = ".gif";
