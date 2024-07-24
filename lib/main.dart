@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:simple_weather_app/core/dependency_injection/dependency_injection.dart';
-
-
 import 'package:simple_weather_app/features/searchCity/presentation/ui/main_screen.dart';
 
 void main() {
@@ -20,56 +17,101 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WeatherScreen(),
+      home:  const WeatherScreen(),
     );
   }
 }
 
-class CitySearchScreen extends StatefulWidget {
+
+class WeatherHomePage extends StatefulWidget {
   @override
-  _CitySearchScreenState createState() => _CitySearchScreenState();
+  _WeatherHomePageState createState() => _WeatherHomePageState();
 }
 
-class _CitySearchScreenState extends State<CitySearchScreen> {
-  final TextEditingController _typeAheadController = TextEditingController();
-  String _selectedCity = '';
-  double _latitude = 0.0;
-  double _longitude = 0.0;
+class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
 
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _controller!.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('City Search App'),
+        title: const Text('Weather App'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TypeAheadField<String>(
-          controller: _typeAheadController,
-              suggestionsCallback: (String keyword){
-             //  return _getCitySuggestions(keyword);
-              },
-              itemBuilder: (context, suggestion) {
-                return ListTile(
-                  title: Text(suggestion),
-                );
-              },
-               onSelected: (String suggestion) {
-          _typeAheadController.text = suggestion;
-      },
-            ),
-            const SizedBox(height: 20.0),
-            if (_selectedCity.isNotEmpty)
-              Text(
-                'Selected City: $_selectedCity\nLatitude: $_latitude\nLongitude: $_longitude',
-                textAlign: TextAlign.center,
-              ),
-          ],
+      body: Stack(
+        children: [
+          _buildBackground(),
+          _buildWeatherInfo(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blue, Colors.lightBlueAccent],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
+    );
+  }
+
+  Widget _buildWeatherInfo() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '24°C',
+            style: TextStyle(
+              fontSize: 80,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Sunny',
+            style: TextStyle(
+              fontSize: 40,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 50),
+          _buildSunAnimation(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSunAnimation() {
+    return AnimatedBuilder(
+      animation: _controller!,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, -10 * _controller!.value),
+          child: const Icon(
+            Icons.wb_sunny,
+            color: Colors.yellow,
+            size: 100,
+          ),
+        );
+      },
     );
   }
 }

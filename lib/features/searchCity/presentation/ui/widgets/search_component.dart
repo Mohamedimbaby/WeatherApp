@@ -5,7 +5,9 @@ import 'package:simple_weather_app/features/searchCity/presentation/cubit/cities
 import 'package:simple_weather_app/features/searchCity/presentation/cubit/search_cubit.dart';
 class SearchComponent extends StatefulWidget {
   final CitiesSearchState state ;
-  const SearchComponent({required this.state,super.key});
+  final TextEditingController typeAheadController ;
+
+  const SearchComponent({required this.state,required this.typeAheadController,super.key});
 
   @override
   State<SearchComponent> createState() => SearchComponentState();
@@ -18,7 +20,6 @@ class SearchComponentState extends State<SearchComponent> with SingleTickerProvi
   late AnimationController _controller;
   late Animation<double> _widthAnimation;
   CitiesSearchCubit citiesSearchCubit = getIt<CitiesSearchCubit>();
-  final TextEditingController _typeAheadController = TextEditingController();
 
   @override
   void initState() {
@@ -65,34 +66,46 @@ class SearchComponentState extends State<SearchComponent> with SingleTickerProvi
           width: _widthAnimation.value,
           margin: const EdgeInsets.symmetric(
               vertical: 32.0, horizontal: 8),
-          padding: const EdgeInsets.all(
-            8.0,
+          decoration: _isSearchActive ? BoxDecoration(
+              color:widget.state.opacity == 0 ? AppColors.mainColor.withOpacity(.5):Colors.grey[200],
+              borderRadius: BorderRadius.circular(16)
+          ): BoxDecoration(
+              color:widget.state.opacity == 0 ? AppColors.mainColor.withOpacity(.5):Colors.grey[200],
+              shape: BoxShape.circle
           ),
-          decoration: BoxDecoration(
-              color:widget.state.opacity == 0 ? AppColors.mainColor.withOpacity(0.5):AppColors.background.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16)),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: _toggleSearch,
-                child: Icon(
-                  _isSearchActive
-                      ? Icons.close
-                      : Icons.search,
-                  color:widget.state.opacity == 0 ? AppColors.mainColor:AppColors.background,
-                ),
-              ),
               if (_isSearchActive)
                 Expanded(
                   child: TextFormField(
-                      controller: _typeAheadController,
-                      onFieldSubmitted:
+                      controller: widget.typeAheadController,
+                    decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.search),
+                        hintText: 'Search...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),),
+                        onFieldSubmitted:
                           (String? keyword) {
                         citiesSearchCubit
                             .autoCompleteCitiesSearch(
                             keyword!);
                       }),
                 ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: GestureDetector(
+                  onTap: _toggleSearch,
+                  child: Icon(
+                    _isSearchActive
+                        ? Icons.close
+                        : Icons.search,
+                    color:widget.state.opacity == 0 ? AppColors.mainColor:AppColors.mainColor,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

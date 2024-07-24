@@ -8,6 +8,12 @@ class AppTextStyles {
     color: AppColors.background,
     fontWeight: FontWeight.bold
   );
+  static  TextStyle textStyle1  = const TextStyle(
+    fontFamily: "LobsterTwo",
+    fontSize: 16,
+    color: AppColors.secondary,
+    fontWeight: FontWeight.bold
+  );
   static  TextStyle h2  = const TextStyle(
     fontSize: 16,
     color: AppColors.mainColor,

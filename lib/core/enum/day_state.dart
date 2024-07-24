@@ -1,0 +1,3 @@
+enum DayState {
+  morning , night
+}

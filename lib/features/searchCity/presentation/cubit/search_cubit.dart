@@ -35,7 +35,9 @@ class CitiesSearchCubit extends Cubit<CitiesSearchState> {
               temperature:
                   "${resultModel.current_weather.temperature} ${resultModel.current_weather_units.temperature}",
               summary: _getWeatherDescription(
-                  resultModel.current_weather.weathercode)));
+                  resultModel.current_weather.weathercode),
+              lat: city.geometry.lat,
+              lng:  city.geometry.lng));
         }
         emit(CitiesSearchResultState(cities: cities));
       } on DioError catch (e) {
