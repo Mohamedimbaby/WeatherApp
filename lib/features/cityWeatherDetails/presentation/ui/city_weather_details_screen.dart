@@ -5,10 +5,11 @@ import 'package:simple_weather_app/core/assets/app_assets.dart';
 import 'package:simple_weather_app/core/colors/app_colors.dart';
 import 'package:simple_weather_app/core/dependency_injection/dependency_injection.dart';
 import 'package:simple_weather_app/core/enum/day_state.dart';
-import 'package:simple_weather_app/features/cityWeatherDetails/domain/models/city_weather_model.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/presentation/cubit/city_weather_details_cubit.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/presentation/cubit/city_weather_details_state.dart';
 import 'package:simple_weather_app/features/cityWeatherDetails/presentation/ui/widgets/city_details_weather_section.dart';
+import 'package:simple_weather_app/features/cityWeatherDetails/presentation/ui/widgets/icon_animation.dart';
+import 'package:simple_weather_app/features/cityWeatherDetails/presentation/ui/widgets/weather_info.dart';
 import 'package:simple_weather_app/features/searchCity/domain/ui_models/city_model.dart';
 
 class CityWeatherDetailsScreen extends StatefulWidget {
@@ -59,23 +60,25 @@ class CityWeatherDetailsScreenState extends State<CityWeatherDetailsScreen> with
                     height: MediaQuery.of(context).size.height,
                     child: const Center(child:  CircularProgressIndicator(color: AppColors.mainColor,)));
               }else if (state is CityWeatherDetailsResultState){
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          const SizedBox(height: 60,),
-                          _buildSunAnimation(state.item),
-                          _buildWeatherInfo(state.item),
-                        ],
-                      ),
-                      CityWeatherDetailsSection(item: state.item,current: currentState!,)
+                return SingleChildScrollView(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            const SizedBox(height: 60,),
+                            IconAnimation( item: state.item, controller: _controller, currentState: currentState,),
+                            WeatherInfo(item:state.item,summary: widget.cityModel.summary,),
+                          ],
+                        ),
+                        CityWeatherDetailsSection(item: state.item,current: currentState!,)
 
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }
@@ -104,50 +107,12 @@ class CityWeatherDetailsScreenState extends State<CityWeatherDetailsScreen> with
       return DayState.night;
     }
   }
-  Widget _buildWeatherInfo(CityWeatherModel item) {
-    return  Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-           Text(
-             "${item.currentWeather.temperature}°C",
-            style: const TextStyle(
-              fontSize: 60,
-              color: AppColors.background,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            widget.cityModel.summary,
-            style: const TextStyle(
-              fontSize: 36,
-              color: AppColors.background,
-            ),
-          ),
-          const SizedBox(height: 20),
 
-        ],
-      ),
-    );
-  }
-  Widget _buildSunAnimation(CityWeatherModel item) {
-    return AnimatedBuilder(
-      animation: _controller!,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, -10 * _controller!.value),
-          child: Image.asset(getCurrentIcon(currentState!,item.currentWeather.weathercode),height: MediaQuery.of(context).size.height * .2,)
-        );
-      },
-    );
-  }
 
 
 }
 
 String getCurrentIcon(DayState currentState ,int weatherCode) {
-  // Refer to Open-Meteo API documentation for weather codes
   switch (weatherCode) {
     case 0:
       return currentState == DayState.morning ? AppAssets.sunny : AppAssets.cloud;
