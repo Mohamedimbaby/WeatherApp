@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_weather_app/core/assets/app_assets.dart';
 
 class WallpaperView extends StatelessWidget {
   const WallpaperView({super.key});
@@ -7,7 +8,7 @@ class WallpaperView extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/rain.gif'),
+          image: AssetImage(AppAssets.rain),
           // Add your background image here
           fit: BoxFit.cover,
         ),
